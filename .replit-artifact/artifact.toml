@@ -1,0 +1,26 @@
+kind = "web"
+previewPath = "/"
+title = "Yadgaar Caterers"
+version = "1.0.0"
+id = "artifacts/yadgaar-caterers"
+router = "path"
+
+[[integratedSkills]]
+name = "react-vite"
+version = "1.0.0"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 19486
+
+[services.development]
+run = "pnpm --filter @workspace/yadgaar-caterers run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/yadgaar-caterers", "run", "build" ]
+run = "pnpm --filter @workspace/yadgaar-caterers run start"
+
+[services.env]
+PORT = "19486"
+BASE_PATH = "/"
