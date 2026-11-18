@@ -1,9 +1,10 @@
 import type { Metadata, Viewport } from "next";
+import Script from "next/script";
 import { Inter, Playfair_Display } from "next/font/google";
 import "./globals.css";
 import Analytics from "@/components/Analytics";
 import CookieConsent from "@/components/CookieConsent";
-import { absoluteUrl, siteConfig } from "@/lib/site";
+import { absoluteUrl, GTM_ID, siteConfig } from "@/lib/site";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -16,6 +17,27 @@ const playfairDisplay = Playfair_Display({
   display: "swap",
   variable: "--font-playfair",
 });
+
+const gtmConsentDefaults = `
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+(function(){
+  var saved = null;
+  try { saved = JSON.parse(window.localStorage.getItem('yadgaar-cookie-consent') || 'null'); } catch (e) {}
+  var analyticsGranted = !!(saved && saved.analytics === true);
+  var marketingGranted = !!(saved && saved.marketing === true);
+  gtag('consent', 'default', {
+    ad_storage: marketingGranted ? 'granted' : 'denied',
+    ad_user_data: marketingGranted ? 'granted' : 'denied',
+    ad_personalization: marketingGranted ? 'granted' : 'denied',
+    analytics_storage: analyticsGranted ? 'granted' : 'denied',
+    functionality_storage: 'denied',
+    personalization_storage: 'denied',
+    security_storage: 'granted'
+  });
+  gtag('js', new Date());
+})();
+`;
 
 export const metadata: Metadata = {
   metadataBase: new URL(absoluteUrl("/")),
@@ -49,6 +71,20 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           Skip to main content
         </a>
         {children}
+
+        {GTM_ID && (
+          <>
+            <Script id="gtm-consent-defaults" strategy="beforeInteractive">
+              {gtmConsentDefaults}
+            </Script>
+            <Script
+              id="gtm-container"
+              strategy="beforeInteractive"
+              src={`https://www.googletagmanager.com/gtm.js?id=${encodeURIComponent(GTM_ID)}`}
+            />
+          </>
+        )}
+
         <Analytics />
         <CookieConsent />
       </body>

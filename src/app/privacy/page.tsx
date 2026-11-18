@@ -81,8 +81,9 @@ const sections: LegalSection[] = [
           storage and is not sent to our servers.
         </p>
         <p>
-          Google Analytics 4 is used only if a measurement ID is configured and you grant Analytics consent. It is not
-          loaded before consent. Analytics cookies and identifiers are set by Google, not by this website.
+          A Google Tag Manager container loads on every page. Google Consent Mode is set to deny analytics and advertising
+          storage by default, and analytics tags are enabled only after you grant Analytics consent. Analytics cookies and
+          identifiers are set by Google, not by this website.
         </p>
         <p>
           The Marketing category is currently reserved for future use; no marketing or advertising cookies are loaded by
@@ -104,7 +105,7 @@ const sections: LegalSection[] = [
           <li>WhatsApp (Meta) — used when you start an enquiry conversation with us.</li>
           <li>Google Maps — an embedded map on the contact section loads content from Google.</li>
           <li>Unsplash — illustrative food photography is delivered through our image optimization endpoint.</li>
-          <li>Google Analytics 4 — only after Analytics consent, if configured.</li>
+          <li>Google Tag Manager — loads on every page; its tags honor your Analytics/Marketing consent choice.</li>
           <li>Cloudflare Turnstile — only if enabled for spam protection on the enquiry form.</li>
         </ul>
         <p>

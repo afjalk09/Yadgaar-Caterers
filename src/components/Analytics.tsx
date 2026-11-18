@@ -2,9 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
-import { loadAnalytics, trackPageView } from "@/lib/analytics";
+import { trackPageView, updateConsent } from "@/lib/analytics";
 import { CONSENT_EVENT, CONSENT_STORAGE_KEY, readConsent } from "@/lib/consent";
-import { GA4_MEASUREMENT_ID, GTM_ID } from "@/lib/site";
 import type { ConsentState } from "@/lib/consent";
 
 export default function Analytics() {
@@ -12,7 +11,11 @@ export default function Analytics() {
   const [analyticsAllowed, setAnalyticsAllowed] = useState(false);
 
   useEffect(() => {
-    const sync = (consent: ConsentState | null) => setAnalyticsAllowed(Boolean(consent?.analytics));
+    const sync = (consent: ConsentState | null) => {
+      setAnalyticsAllowed(Boolean(consent?.analytics));
+      if (consent) updateConsent(consent.analytics, consent.marketing);
+    };
+
     sync(readConsent());
 
     const onConsentChange = (event: Event) => sync((event as CustomEvent<ConsentState>).detail);
@@ -29,8 +32,7 @@ export default function Analytics() {
   }, []);
 
   useEffect(() => {
-    if (!analyticsAllowed || (!GTM_ID && !GA4_MEASUREMENT_ID)) return;
-    loadAnalytics();
+    if (!analyticsAllowed) return;
     trackPageView(pathname || "/");
   }, [analyticsAllowed, pathname]);
 

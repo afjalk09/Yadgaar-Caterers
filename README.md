@@ -36,8 +36,8 @@ Copy `.env.example` to `.env.local`. Never commit `.env*` files containing real 
 
 | Variable | Purpose |
 | --- | --- |
-| `NEXT_PUBLIC_SITE_URL` | Canonical production origin used in metadata, canonical URLs, sitemap and robots.txt. Replace `https://example.com` before launch. |
-| `NEXT_PUBLIC_GTM_ID` | Google Tag Manager container ID (public). Defaults to the supplied `GTM-T68P9QZR`. The container script is injected exactly once from the root layout after Analytics consent; configure GA4 and any other tags inside GTM to avoid duplicate Google tags. |
+| `NEXT_PUBLIC_SITE_URL` | Canonical production origin used in metadata, canonical URLs, sitemap and robots.txt. Defaults to `https://yadgaarcaterers.cc.cd`; override if the production domain changes. |
+| `NEXT_PUBLIC_GTM_ID` | Google Tag Manager container ID (public). Defaults to the supplied `GTM-T68P9QZR`. The container script is injected exactly once from the root layout into `<head>` on every page from the root layout. Google Consent Mode v2 defaults analytics and advertising storage to denied until the visitor consents. Configure GA4 and any other tags inside GTM to avoid duplicate Google tags. |
 | `NEXT_PUBLIC_GA4_MEASUREMENT_ID` | Fallback GA4 measurement ID used only when the GTM ID is empty. Public by design. |
 | `NEXT_PUBLIC_TURNSTILE_SITE_KEY` | Cloudflare Turnstile site key (public). Leave blank to use only the honeypot and in-memory rate limit. |
 | `TURNSTILE_SECRET_KEY` | Server-only Turnstile secret. Verification is performed in `src/app/api/enquiry/route.ts`. |
@@ -53,13 +53,13 @@ The single primary CTA is **Book Catering**. It appears in the hero and navigati
 - Security headers (HSTS in production, CSP, `X-Content-Type-Options`, `Referrer-Policy`, `X-Frame-Options`, `Permissions-Policy`) are configured in `next.config.ts`.
 - A production-only middleware redirects forwarded HTTP requests to HTTPS. Confirm this behavior with your hosting provider; a provider-level redirect is still recommended.
 - The enquiry API validates fields with Zod, silently rejects honeypot submissions, applies a 5-requests-per-10-minutes in-memory rate limit per IP, and verifies Turnstile when a secret is configured. In-memory state is per server instance and resets on restart.
-- Consent is stored in browser `localStorage` under `yadgaar-cookie-consent`. Analytics and marketing tags are not loaded before consent.
+- Consent is stored in browser `localStorage` under `yadgaar-cookie-consent`. The GTM container is present in the head on every page for detection, but Google Consent Mode v2 denies analytics/advertising storage until consent is granted; custom `page_view`, `cta_click` and `form_submit` events are only pushed after Analytics consent.
 - The Privacy Policy and Terms & Conditions contain clearly marked `PLACEHOLDER` text. Complete and have them reviewed by a qualified legal professional before publication.
 
 ## Manual Actions Before Launch
 
 1. Set `NEXT_PUBLIC_SITE_URL` to the production domain (no trailing slash).
-2. Verify the supplied GTM container (`GTM-T68P9QZR`) in Tag Manager, add/configure the GA4 tag there, and confirm `page_view`, `cta_click` and `form_submit` events in GA4. Analytics loads only after consent.
+2. Verify the supplied GTM container (`GTM-T68P9QZR`) in Tag Manager, add/configure the GA4 tag there, and confirm `page_view`, `cta_click` and `form_submit` events in GA4. Consent Mode denies analytics storage until the visitor accepts.
 3. Create Cloudflare Turnstile site/secret keys for the widget and server verification if stronger spam protection is required.
 4. Replace all `PLACEHOLDER` text in legal pages and `siteConfig` (business email, legal entity, retention, cancellation and payment terms).
 5. Confirm HTTPS/DNS settings and HSTS `preload` suitability with the hosting provider.

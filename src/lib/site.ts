@@ -43,7 +43,7 @@ function normalizeUrl(value: string | undefined, fallback: string) {
 export const SITE_URL = normalizeUrl(
   process.env.NEXT_PUBLIC_SITE_URL,
   process.env.NODE_ENV === "production"
-    ? "https://example.com"
+    ? "https://yadgaarcaterers.cc.cd"
     : "http://localhost:3000",
 );
 
