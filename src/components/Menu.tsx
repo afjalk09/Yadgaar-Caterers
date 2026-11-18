@@ -1,5 +1,6 @@
 "use client";
 import React, { useState } from "react";
+import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 
 const menuCategories = ["All", "Biryani Specials", "Starters", "Main Course", "Desserts"];
@@ -81,7 +82,9 @@ export default function Menu() {
             {menuCategories.map(category => (
               <button
                 key={category}
+                type="button"
                 onClick={() => setActiveCategory(category)}
+                aria-pressed={activeCategory === category}
                 className={`px-5 py-2 rounded-full text-sm font-medium transition-all duration-300 ${
                   activeCategory === category 
                     ? "bg-primary text-white shadow-md" 
@@ -107,10 +110,12 @@ export default function Menu() {
                 className="bg-white rounded-2xl overflow-hidden shadow-sm border border-border group"
               >
                 <div className="relative h-60 overflow-hidden">
-                  <img 
-                    src={item.image} 
-                    alt={item.name} 
-                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                  <Image
+                    src={item.image}
+                    alt={`${item.name} prepared by Yadgaar Caterers`}
+                    fill
+                    sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                    className="object-cover transition-transform duration-500 group-hover:scale-110"
                   />
                   <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-bold text-primary">
                     {item.category}

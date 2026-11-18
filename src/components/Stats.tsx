@@ -1,6 +1,6 @@
 "use client";
 import React, { useState, useEffect, useRef } from "react";
-import { motion, useInView } from "framer-motion";
+import { motion, useInView, useReducedMotion } from "framer-motion";
 
 const stats = [
   { value: 10, suffix: "+", label: "Years Experience" },
@@ -10,12 +10,13 @@ const stats = [
 ];
 
 function Counter({ end, suffix }: { end: number, suffix: string }) {
-  const [count, setCount] = useState(0);
+  const reducedMotion = useReducedMotion();
+  const [count, setCount] = useState(reducedMotion ? end : 0);
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-50px" });
 
   useEffect(() => {
-    if (!isInView) return;
+    if (!isInView || reducedMotion) return;
 
     let start = 0;
     const duration = 2000;
@@ -32,11 +33,16 @@ function Counter({ end, suffix }: { end: number, suffix: string }) {
     }, 16);
     
     return () => clearInterval(timer);
-  }, [end, isInView]);
+  }, [end, isInView, reducedMotion]);
 
   return (
-    <span ref={ref} className="text-4xl md:text-5xl lg:text-6xl font-serif font-bold text-accent">
-      {count.toLocaleString()}{suffix}
+    <span
+      ref={ref}
+      role="img"
+      aria-label={`${end.toLocaleString()}${suffix}`}
+      className="text-4xl md:text-5xl lg:text-6xl font-serif font-bold text-accent"
+    >
+      <span aria-hidden="true">{count.toLocaleString()}{suffix}</span>
     </span>
   );
 }

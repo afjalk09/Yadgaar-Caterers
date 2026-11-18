@@ -1,6 +1,6 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { ChevronLeft, ChevronRight, Quote } from "lucide-react";
 
 const testimonials = [
@@ -28,13 +28,16 @@ const testimonials = [
 
 export default function Testimonials() {
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [paused, setPaused] = useState(false);
+  const reducedMotion = useReducedMotion();
 
   useEffect(() => {
+    if (reducedMotion || paused) return;
     const timer = setInterval(() => {
       setCurrentIndex((prev) => (prev + 1) % testimonials.length);
     }, 5000);
     return () => clearInterval(timer);
-  }, []);
+  }, [paused, reducedMotion]);
 
   const next = () => setCurrentIndex((prev) => (prev + 1) % testimonials.length);
   const prev = () => setCurrentIndex((prev) => (prev - 1 + testimonials.length) % testimonials.length);
@@ -55,8 +58,14 @@ export default function Testimonials() {
         </div>
 
         <div className="max-w-4xl mx-auto relative">
-          <div className="bg-white rounded-3xl p-8 md:p-12 shadow-lg border border-border relative">
-            
+          <div
+            className="bg-white rounded-3xl p-8 md:p-12 shadow-lg border border-border relative"
+            onMouseEnter={() => setPaused(true)}
+            onMouseLeave={() => setPaused(false)}
+            onFocusCapture={() => setPaused(true)}
+            onBlurCapture={() => setPaused(false)}
+          >
+
             <AnimatePresence mode="wait">
               <motion.div
                 key={currentIndex}
@@ -65,8 +74,9 @@ export default function Testimonials() {
                 exit={{ opacity: 0, x: -20 }}
                 transition={{ duration: 0.4 }}
                 className="flex flex-col items-center text-center"
+                aria-live="polite"
               >
-                <div className="flex gap-1 mb-6">
+                <div className="flex gap-1 mb-6" aria-label="5 out of 5 stars" role="img">
                   {[1, 2, 3, 4, 5].map((star) => (
                     <span key={star} className="text-secondary text-xl">★</span>
                   ))}
@@ -85,17 +95,21 @@ export default function Testimonials() {
 
             {/* Controls */}
             <div className="flex justify-center gap-4 mt-10">
-              <button 
+              <button
+                type="button"
                 onClick={prev}
+                aria-label="Previous testimonial"
                 className="w-10 h-10 rounded-full bg-background border border-border flex items-center justify-center text-foreground hover:bg-primary hover:text-white transition-colors"
               >
-                <ChevronLeft size={20} />
+                <ChevronLeft size={20} aria-hidden="true" />
               </button>
-              <button 
+              <button
+                type="button"
                 onClick={next}
+                aria-label="Next testimonial"
                 className="w-10 h-10 rounded-full bg-background border border-border flex items-center justify-center text-foreground hover:bg-primary hover:text-white transition-colors"
               >
-                <ChevronRight size={20} />
+                <ChevronRight size={20} aria-hidden="true" />
               </button>
             </div>
             

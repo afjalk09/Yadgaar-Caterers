@@ -75,7 +75,7 @@ export default function Services() {
               variants={itemVariants}
               className="bg-background rounded-2xl p-8 shadow-sm border border-border hover:shadow-md hover:-translate-y-1 transition-all duration-300 group"
             >
-              <div className="w-16 h-16 rounded-2xl bg-white shadow-sm flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+              <div aria-hidden="true" className="w-16 h-16 rounded-2xl bg-white shadow-sm flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
                 {service.icon}
               </div>
               <h4 className="text-xl font-serif font-bold text-foreground mb-3">{service.title}</h4>
